@@ -13,20 +13,63 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 bears <- read.csv(file="BEARS.csv",header = TRUE)
+column_names <- names(bears)
+print(column_names)
 #adjust factors to be factors
 bears$SEX<- as.factor(bears$SEX)
 bears$MONTH<- as.factor(bears$MONTH)
 ```
+## Plot
+```{r}
+for (col_name in column_names) { print(paste("Column name:", col_name))
+  formula_string <- paste("LENGTH ~", col_name)
+    formula <- as.formula(formula_string)
+simp <- lm(formula,data=bears)
+plot(formula,data=bears)
+abline(simp)
 
-## Model LENGTH ~ NECK  this is an example  
+
+
+
+}
+
+```
+## Adjusted R-Squared
 
 ```{r}
-simp <- lm(LENGTH~NECK,data=bears)
-plot(LENGTH~NECK,data=bears)
-abline(simp)
-summary.lm(simp)
-```
+for (col_name in column_names) { print(paste("Column name:", col_name))
+  formula_string <- paste("LENGTH ~", col_name)
+    formula <- as.formula(formula_string)
+simp <- lm(formula,data=bears)
+#plot(formula,data=bears)
+#abline(simp)
+multiple_r_squared<-summary(simp)$r.squared
 
+print(multiple_r_squared)
+
+}
+
+```
+According to the Adjusted-Rsquared output, HEADLEN has the highest value of 0.846 with Sex being the lowest value of 0.01065.
+
+## Residual Standard error
+
+```{r}
+for (col_name in column_names) { print(paste("Column name:", col_name))
+  formula_string <- paste("LENGTH ~", col_name)
+    formula <- as.formula(formula_string)
+simp <- lm(formula,data=bears)
+#plot(formula,data=bears)
+#abline(simp)
+multiple_r_squared<-summary(simp)$sigma
+
+print(multiple_r_squared)
+
+}
+
+```
+According to the residual standard error, HeadLen is the smallest with a value of 4.235 with the highest being Month.
 
 ## Compare all models that predict LENGTH other than NECK. Then order them from worst to best by its value of Adjusted-Rsquared (bigger is better), or by RSE (residual standard error) where smaller is better. 
 
+The best model for predicting the length of the bear is the headlength. Since the Adjusted-Rsquared output of HEADLEN has the highest value of 0.846 and the lowest value being 4.235 for the residual standard error, for only an individual variable, headlength is the best indicator for the length of the bear. We want to maximize Adjusted-Rsquared because the value increases when there are more significant predicitors and decreases when there are uncessary or redudant predictors. Residual Standard Error should be minimized because we want to minimize the error between the actual value and the value determined by the regression line.
